@@ -1,0 +1,227 @@
+<h2>Editing film: {{film.nazov}}</h2>
+<form (ngSubmit)="submit()" #formModel = "ngForm">
+    <mat-form-field>
+        <mat-label>Nazov</mat-label>
+        <input matInput [(ngModel)]="nazov" name="Nazov" required #nameModel="ngModel">
+        <mat-error>
+            @if(nameModel.errors && nameModel.errors['required']) {
+                Film name is mandatory
+            } 
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Rok</mat-label>
+        <input matInput type="number" [(ngModel)]="rok" name="Rok" required #nameModel="ngModel">
+        <mat-error>
+            @if(nameModel.errors && nameModel.errors['required']) {
+                Film year is mandatory
+            } 
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>Slovenský Nazov</mat-label>
+        <input matInput [(ngModel)]="slovenskyNazov" name="Slovenský Nazov" required #nameModel="ngModel">
+        <mat-error>
+            @if(nameModel.errors && nameModel.errors['required']) {
+                Film slovak name is mandatory
+            } 
+        </mat-error>
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>AFI 1998</mat-label>
+        <input matInput type="number" [(ngModel)]="poradieVRebricku['AFI 1998']" name="AFI 1998">
+       
+    </mat-form-field>
+
+    <mat-form-field>
+        <mat-label>AFI 2007</mat-label>
+        <input matInput type="number" [(ngModel)]="poradieVRebricku['AFI 2007']" name="AFI 2007">
+    </mat-form-field>
+        
+    <h3>Reziser</h3>
+    <table mat-table [dataSource]="PersonDataSourceInFilm" >
+
+        <ng-container matColumnDef="krstneMeno">
+          <th mat-header-cell *matHeaderCellDef> Krstne meno </th>
+          <td mat-cell *matCellDef="let person"> {{person.krstneMeno}} </td>
+        </ng-container>
+      
+        
+        <ng-container matColumnDef="stredneMeno">
+          <th mat-header-cell *matHeaderCellDef> Stredne meno </th>
+          <td mat-cell *matCellDef="let person"> {{person.stredneMeno}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="priezvisko">
+          <th mat-header-cell *matHeaderCellDef> Priezvisko </th>
+          <td mat-cell *matCellDef="let person"> {{person.priezvisko}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let person">
+                <button mat-icon-button type="button" color="warn" aria-label="delete user" (click)="deletePersonFromFilm(person)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+          </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsPerson"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsPerson;"></tr>
+      
+      </table>
+
+      @if(addDirectorToFilm){
+        <mat-form-field>
+            <mat-label>Filter</mat-label>
+            <input matInput (keyup)="applyFilter($event)" placeholder="Ex. ium" #input>
+          </mat-form-field>
+    
+        <table mat-table [dataSource]="PersonDataSource" >
+    
+            <ng-container matColumnDef="krstneMeno">
+              <th mat-header-cell *matHeaderCellDef> Krstne meno </th>
+              <td mat-cell *matCellDef="let person"> {{person.krstneMeno}} </td>
+            </ng-container>
+          
+            
+            <ng-container matColumnDef="stredneMeno">
+              <th mat-header-cell *matHeaderCellDef> Stredne meno </th>
+              <td mat-cell *matCellDef="let person"> {{person.stredneMeno}} </td>
+            </ng-container>
+          
+            <ng-container matColumnDef="priezvisko">
+              <th mat-header-cell *matHeaderCellDef> Priezvisko </th>
+              <td mat-cell *matCellDef="let person"> {{person.priezvisko}} </td>
+            </ng-container>
+          
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let person">
+                <button mat-button  type="button" color="primary" (click)="addPersonToFilm(person)"> Add</button>
+              </ng-container>
+          
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsPerson"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsPerson;"></tr>
+          
+            
+    
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+            </tr>
+          </table>
+      }@else{
+        <button mat-button color="warn" type="button"  (click)="addDirector()">
+            <p>Add new director</p>
+          </button>
+      }
+    
+
+      <h3>Postava</h3>
+
+    <table mat-table [dataSource]="postavaDataSource" >
+
+        <ng-container matColumnDef="postava">
+          <th mat-header-cell *matHeaderCellDef> Postava</th>
+          <td mat-cell *matCellDef="let postava"> {{postava.postava}} </td>
+        </ng-container>
+      
+        
+        <ng-container matColumnDef="dolezitost">
+          <th mat-header-cell *matHeaderCellDef> Dolezitost </th>
+          <td mat-cell *matCellDef="let postava"> {{postava.dolezitost}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="herec">
+          <th mat-header-cell *matHeaderCellDef> Herec </th>
+          <td mat-cell *matCellDef="let postava"> {{postava.herec.krstneMeno}}
+            {{postava.herec.stredneMeno}} {{postava.herec.priezvisko}} </td>
+        </ng-container>
+      
+        <ng-container matColumnDef="actions">
+            <th mat-header-cell *matHeaderCellDef></th>
+            <td mat-cell *matCellDef="let postava">
+                <button mat-icon-button type="button" color="primary" aria-label="edit film" (click)="editPostava(postava)">
+                    <mat-icon>edit</mat-icon>
+                </button>
+                  <button mat-icon-button type="button" color="warn" aria-label="delete user" (click)="deletePostava(postava)">
+                    <mat-icon>delete</mat-icon>
+                  </button>
+          </ng-container>
+      
+        <tr mat-header-row *matHeaderRowDef="displayedColumnsPostava"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedColumnsPostava;"></tr>
+      </table>
+
+    
+
+    @if(postavaEdit || newPostava){
+        <form (ngSubmit)="submitPostava()" #formModel = "ngForm">
+            <mat-form-field>
+                <mat-label>Nazov</mat-label>
+                <input matInput [(ngModel)]="selectedPostava.postava" name="Postava" required #nameModel="ngModel">
+                <mat-error>
+                    @if(nameModel.errors && nameModel.errors['required']) {
+                        Character name is mandatory
+                    } 
+                </mat-error>
+            </mat-form-field>
+    
+            <mat-slide-toggle [(ngModel)]="isChecked" [checked]="isChecked" (click)="changeDolezitost()">Hlavna postava</mat-slide-toggle>
+    
+            <h3>Herec</h3>
+          <p>{{selectedPostava.herec.krstneMeno}} {{selectedPostava.herec.stredneMeno}} {{selectedPostava.herec.priezvisko}}</p>
+        
+          <mat-form-field>
+            <mat-label>Filter</mat-label>
+            <input matInput (keyup)="applyFilterHerec($event)" placeholder="Ex. ium" #input>
+          </mat-form-field>
+    
+          <table mat-table [dataSource]="HerecDataSource" >
+    
+            <ng-container matColumnDef="krstneMeno">
+              <th mat-header-cell *matHeaderCellDef> Krstne meno </th>
+              <td mat-cell *matCellDef="let person"> {{person.krstneMeno}} </td>
+            </ng-container>
+          
+            
+            <ng-container matColumnDef="stredneMeno">
+              <th mat-header-cell *matHeaderCellDef> Stredne meno </th>
+              <td mat-cell *matCellDef="let person"> {{person.stredneMeno}} </td>
+            </ng-container>
+          
+            <ng-container matColumnDef="priezvisko">
+              <th mat-header-cell *matHeaderCellDef> Priezvisko </th>
+              <td mat-cell *matCellDef="let person"> {{person.priezvisko}} </td>
+            </ng-container>
+          
+            <ng-container matColumnDef="actions">
+                <th mat-header-cell *matHeaderCellDef></th>
+                <td mat-cell *matCellDef="let person">
+                <button mat-button  type="button" color="primary" (click)="addPersonToCharacter(person)"> Add</button>
+              </ng-container>
+          
+            <tr mat-header-row *matHeaderRowDef="displayedColumnsPerson"></tr>
+            <tr mat-row *matRowDef="let row; columns: displayedColumnsPerson;"></tr>
+          
+            
+    
+            <tr class="mat-row" *matNoDataRow>
+              <td class="mat-cell" colspan="4">No data matching the filter "{{input.value}}"</td>
+            </tr>
+          </table>
+          <button mat-button type="submit" >Save character</button>
+        </form>
+    }@else {
+        <button mat-button color="warn" type="button" (click)="newCharacter()">
+            <p>Add new character</p>
+          </button>
+    }
+
+    <br>
+    <button mat-button type="submit" [disabled]="formModel.form.invalid">Save</button>
+
+    
+</form>
